@@ -18,7 +18,4 @@ void einherjar_main(unsigned long magic, unsigned long address)
 
     (void)mbi;
     (void)magic;
-
-    *(unsigned char *)0xb8000 = 'A';
-    *(unsigned char *)0xb8001 = 0xf;
 }

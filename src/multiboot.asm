@@ -7,12 +7,17 @@ use32
 extern einherjar_main	; this is our kernel's entry point
 
 ; Setting up the Multiboot header - see GRUB docs for details
-MBALIGN		equ	1<<0			; align loaded modules on page boundaries
-MEMINFO		equ	1<<1			; provide memory map
-FLAGS		equ	MBALIGN | MEMINFO	; this is the Multiboot 'flag' field
+MBALIGN		equ	1<<0			; Align loaded modules on page boundaries
+MEMINFO		equ	1<<1			; Provide memory map
+GRAPHICS	equ	1<<2
+FLAGS		equ	MBALIGN | MEMINFO | GRAPHICS	; This is the Multiboot 'flag' field
 MAGIC		equ	0x1BADB002		; 'magic number' lets bootloader find the header
-CHECKSUM	equ	-(MAGIC + FLAGS)	; checksum required to prove that we are multiboot
-STACK_SIZE	equ	0x4000			; our stack size is 16KiB
+CHECKSUM	equ	-(MAGIC + FLAGS)	; Checksum required to prove that we are multiboot
+STACK_SIZE	equ	0x4000			; Stack size is 16KiB
+VBE_MODE	equ	0
+VBE_WIDTH	equ	1024
+VBE_HEIGHT	equ	768
+VBE_DEPTH	equ	32
 
 
 ; The multiboot header must come first.
@@ -24,7 +29,16 @@ align 8
 multiboot_header:
 dd MAGIC
 dd FLAGS
-dd -(MAGIC + FLAGS)
+dd CHECKSUM
+dd 0
+dd 0
+dd 0
+dd 0
+dd 0
+dd VBE_MODE
+dd VBE_WIDTH
+dd VBE_HEIGHT
+dd VBE_DEPTH
 
 ; The beginning of our kernel code
 section .text
@@ -97,28 +111,12 @@ multiboot_entry:
 
 bits 64
 _64_bits:
-	mov rdi, 0xb8000   ; This is the beginning of "video memory."
-	mov rdx, rdi       ; We'll save that value for later, too.
-	mov rcx, 80*25     ; This is how many characters are on the screen.
-	mov ax, 0x7400     ; Video memory uses 2 bytes per character. The high byte
-                   	   ; determines foreground and background colors. See also
-			   ; http://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes#CGA
-                           ; In this case, we're setting red-on-gray (MIT colors!)
-	rep stosw          ; Copies whatever is in ax to [rdi], rcx times.
+	call einherjar_main		; calling the kernel
 
-	mov rdi, rdx       ; Restore rdi to the beginning of video memory.
-	mov rsi, hello     ; Point rsi ("source" of string instructions) at string.
-	mov rbx, hello_end ; Put end of string in rbx for comparison purposes.
-hello_loop:
-	movsb              ; Moves a byte from [rsi] to [rdi], increments rsi and rdi.
-	inc rdi            ; Increment rdi again to skip over the color-control byte.
-	cmp rsi, rbx       ; Check if we've reached the end of the string.
-	jne hello_loop     ; If not, loop.
-	hlt                ; If so, halt.
+hang:
+	hlt				; something bad happened, machine halted
+	jmp hang
 
-hello:
-	db "Hello, kernel!"
-hello_end:
 
 ; Global descriptor table entry format
 ; See Intel 64 Software Developers' Manual, Vol. 3A, Figure 3-8
@@ -147,15 +145,6 @@ gdt:
 	GDT_ENTRY 0, 0xffffff, RING0, READ_WRITE
 	; You'd want to have entries for other rings here, if you were using them.
 gdt_end:
-
-	;------------
-
-	call einherjar_main		; calling the kernel
-
-hang:
-	hlt				; something bad happened, machine halted
-	jmp hang
-
 
 section .bss nobits align=8
 ; Reserve initial kernel stack space
