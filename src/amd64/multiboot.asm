@@ -4,7 +4,7 @@
 
 use32
 
-extern einherjar_main	; this is our kernel's entry point
+extern osdevasm_main	; this is our kernel's entry point
 
 ; Setting up the Multiboot header - see GRUB docs for details
 MBALIGN		equ	1<<0			; Align loaded modules on page boundaries
@@ -111,7 +111,7 @@ multiboot_entry:
 
 bits 64
 _64_bits:
-	call einherjar_main		; calling the kernel
+	call osdevasm_main		; calling the kernel
 
 hang:
 	hlt				; something bad happened, machine halted

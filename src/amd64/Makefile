@@ -11,11 +11,11 @@ LDFLAGS = -z max-page-size=0x1000 --warn-common --strip-all
 BOOTLOADER_PATH = .
 INITRD_PATH     = iso
 
-OBJECTS = multiboot.o    \
+OBJECTS = multiboot.o \
 	startup.o
 
-KERNEL          = einherjar.elf
-MULTIBOOT_IMAGE	= einherjar.iso
+KERNEL          = osdevasm.elf
+MULTIBOOT_IMAGE	= osdevasm.iso
 
 all: kernel cdrom
 
@@ -44,5 +44,5 @@ run:
 clean:
 	$(cleaning)
 	$(RM) $(OBJECTS)
-	$(RM) $(BOOTLOADER_PATH)/iso/boot/einherjar.elf
+	$(RM) $(BOOTLOADER_PATH)/iso/boot/osdevasm.elf
 	$(RM) $(MULTIBOOT_IMAGE)

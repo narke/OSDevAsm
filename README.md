@@ -1,2 +1,2 @@
-# Einherjar
-Operating system for PowerPC Macs and x86-64 PCs. 
+# OSdevAsm
+A little bit of OSdev for x86 and amd64 in asm.

@@ -11,7 +11,7 @@
 /**
  * The kernel entry point. All starts from here!
  */
-void einherjar_main(unsigned long magic, unsigned long address)
+void osdevasm_main(unsigned long magic, unsigned long address)
 {
     multiboot_info_t *mbi;
     mbi = (multiboot_info_t *)address;
