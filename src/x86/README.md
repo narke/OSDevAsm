@@ -3,11 +3,11 @@ Build and run
 
 Get the sources
 
-	> git clone https://github.com/narke/OSdevAsm.git
+	> git clone https://github.com/narke/OSDevAsm.git
 
 Compile and generate an ISO image
 
-	> cd OSdevAsm/src/x86
+	> cd OSDevAsm/src/x86
 	> make
 
 Run with qemu (by using 2 Mb of RAM and the generated ISO image)
