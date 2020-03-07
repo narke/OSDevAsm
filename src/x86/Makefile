@@ -1,12 +1,12 @@
 LDFLAGS = --warn-common -melf_i386 --strip-all
-OBJECT = osdevasm.o
+OBJECT = osdev.o
 BOOTABLE_NAME   = osdevasm.elf
 MULTIBOOT_IMAGE	= osdevasm.iso
 
 all: osdevasm cdrom
 
 osdevasm:
-	nasm -f elf osdevasm.asm
+	nasm -f elf osdev.asm
 	$(LD) $(LDFLAGS) -T linker.ld -o $(BOOTABLE_NAME) $(OBJECT)
 
 cdrom:
