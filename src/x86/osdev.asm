@@ -227,7 +227,7 @@ keyboard_interrupt_setup:
     and ecx, 0xffff0000       ; bits 48..63 (offset high)
     or  ecx, 0x00008e00       ; bits 32..39 (unused)      <- 00000000
                               ; bits 40..43 (gate type)   <- 1110
-                              ; bits 44 (storage segment) <-0
+                              ; bits 44 (storage segment) <- 0
                               ; bits 45, 46 (dpl)         <- 00
                               ; bits 47 (present)         <- 1
                               ; Result: 0b1000111000000000 = 0x8e00
